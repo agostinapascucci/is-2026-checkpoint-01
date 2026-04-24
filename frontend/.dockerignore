@@ -1,0 +1,31 @@
+# Excluir archivos que no deben entrar en la imagen Docker
+# (buena práctica obligatoria del checkpoint)
+
+# Control de versiones
+.git
+.gitignore
+.gitkeep
+
+# Variables de entorno locales (¡nunca dentro de la imagen!)
+.env
+.env.*
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Editores e IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+
+# Documentación del proyecto (no necesaria en runtime)
+README.md
+*.md
+
+# Este mismo archivo
+.dockerignore
