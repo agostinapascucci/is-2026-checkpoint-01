@@ -1,0 +1,118 @@
+services:
+
+  frontend:
+    build: ./frontend
+    container_name: teamboard-frontend
+    ports:
+      - "${FRONTEND_PORT}:8080"
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - teamboard-net
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+        reservations:
+          cpus: "0.1"
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    build: ./backend
+    container_name: teamboard-backend
+    ports:
+      - "${BACKEND_PORT}:5000"
+    env_file: .env
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - teamboard-net
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+        reservations:
+          cpus: "0.1"
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  database:
+    image: postgres:16-alpine
+    container_name: teamboard-database
+    env_file: .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - teamboard-net
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+        reservations:
+          cpus: "0.1"
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: teamboard-portainer
+    ports:
+      - "${PORTAINER_PORT}:9000"
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - teamboard-net
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 128M
+        reservations:
+          cpus: "0.05"
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  teamboard-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  portainer_data:
