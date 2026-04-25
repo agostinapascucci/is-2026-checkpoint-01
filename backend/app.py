@@ -39,7 +39,7 @@ def info():
 def get_team():
     try:
         conn = get_db_connection()
-        cur = conn.cursor()
+        cur = conn.cursor() 
         cur.execute('SELECT * FROM members')
         members = cur.fetchall()
         cur.close()
@@ -47,6 +47,24 @@ def get_team():
         return jsonify(members)
     except Exception as e:
         print(f"Error fetching team: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
+        
+@app.route('/api/team/<int:id>')
+def get_member(id):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM members WHERE id = %s', (id,))
+        member = cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        if not member:
+            return jsonify({"error": "Member not found"}), 404
+        
+        return jsonify(member)
+    except Exception as e:
+        print(f"Error fetching member: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 if __name__ == '__main__':
