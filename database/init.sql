@@ -15,4 +15,4 @@ VALUES
     ('Joaquin', 'Montes', '33459', 'Backend — API REST con Python y Flask', 'backend', 'running'),
     ('Santiago', 'Talavera', '33167', 'Base de Datos con PostgreSQL', 'database', 'running'),
     ('Nicolas', 'Perez', '33177', 'Panel de Monitoreo con Portainer', 'portainer', 'running'),
-    ('Justina', 'Smith', '33346', 'Feature adicional', 'sin definir', 'running');
+    ('Justina', 'Smith', '33346', 'Backend - Extension de backend con endpoint adicional', 'backend', 'running');
