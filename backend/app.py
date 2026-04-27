@@ -1,5 +1,6 @@
 import os
 import psycopg2
+import requests
 from flask import Flask, jsonify
 from flask_cors import CORS
 from psycopg2.extras import RealDictCursor
@@ -31,6 +32,25 @@ def get_db_connection():
         port=DB_PORT,
         cursor_factory=RealDictCursor
     )
+
+SERVICE_URLS = {
+    "frontend":  "http://frontend:80",
+    "backend":   "http://localhost:5000/api/health",
+    "database":  None,  # verificado via psycopg2
+    "portainer": "http://portainer:9000",
+    "compose/readme": None,  # no tiene endpoint propio
+}
+
+def check_service_status(servicio):
+    url = SERVICE_URLS.get(servicio)
+    if url is None:
+        return "running"  # asumido o verificado por DB
+    try:
+        r = requests.get(url, timeout=2)
+        return "running" if r.status_code == 200 else "degraded"
+    except Exception:
+        return "stopped"
+
 
 @app.route('/api/health')
 def health():
@@ -126,7 +146,9 @@ def get_team():
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute('SELECT * FROM members')
-        members = cur.fetchall()
+        members = list(cur.fetchall())
+        for m in members:
+            m["estado"] = check_service_status(m["servicio"])
         cur.close()
         conn.close()
         return jsonify(members)
@@ -147,6 +169,7 @@ def get_member(id):
         if not member:
             return jsonify({"error": "Member not found"}), 404
 
+        member["estado"] = check_service_status(member["servicio"])
         return jsonify(member)
     except Exception as e:
         print(f"Error fetching member: {e}")
