@@ -21,7 +21,7 @@ USER backenduser
 EXPOSE 5000
 
 # Healthcheck para verificar que el servicio esté respondiendo
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
   CMD curl -f http://localhost:5000/api/health || exit 1
 
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
