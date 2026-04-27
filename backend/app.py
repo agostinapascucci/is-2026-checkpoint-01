@@ -35,18 +35,37 @@ def get_db_connection():
 @app.route('/api/health')
 def health():
     """
-    Health check del servicio
+    Health check del servicio verificando la base de datos
     ---
     responses:
       200:
-        description: Estado del servicio
+        description: Estado del servicio activo y conectado
         schema:
           properties:
             status:
               type: string
               example: active
+      500:
+        description: Error de conexión con la base de datos
+        schema:
+          properties:
+            status:
+              type: string
+              example: error
+            message:
+              type: string
+              example: Database disconnected
     """
-    return jsonify({"status": "active"})
+    try:
+        # Intenta conectarse a la base de datos
+        conn = get_db_connection()
+        conn.close()
+        # Si funcionó, devuelve activo
+        return jsonify({"status": "active"})
+    except Exception:
+        # Si falló la conexión, devuelve un error HTTP 500
+        return jsonify({"status": "error", "message": "Database disconnected"}), 500
+
 
 @app.route('/api/info')
 def info():
