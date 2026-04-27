@@ -34,7 +34,7 @@ def get_db_connection():
     )
 
 SERVICE_URLS = {
-    "frontend":  "http://frontend:80",
+    "frontend":  "http://frontend:8080",
     "backend":   "http://localhost:5000/api/health",
     "database":  None,  # verificado via psycopg2
     "portainer": "http://portainer:9000",
@@ -42,6 +42,11 @@ SERVICE_URLS = {
 }
 
 def check_service_status(servicio):
+    # Si el servicio es el backend, ya sabemos que está corriendo
+    # porque este mismo código se está ejecutando.
+    if servicio == "backend":
+        return "running"
+        
     url = SERVICE_URLS.get(servicio)
     if url is None:
         return "running"  # asumido o verificado por DB
@@ -50,6 +55,7 @@ def check_service_status(servicio):
         return "running" if r.status_code == 200 else "degraded"
     except Exception:
         return "stopped"
+
 
 
 @app.route('/api/health')
