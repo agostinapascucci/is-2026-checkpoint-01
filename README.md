@@ -38,11 +38,11 @@ Página HTML servida por un servidor HTTP de Python (python3 -m http.server).
 
 ### `backend` — teamboard-backend
 
-Capa intermedia entre el frontend y la base de datos. Expone una API REST con los datos del equipo que el frontend consume.
+Capa intermedia entre el frontend y la base de datos. Expone una API REST con los datos del equipo que el frontend consume. 
 
 > **Tecnología:** Docker, Python 3.12-slim, Flask, psycopg2, Gunicorn,variables de entorno 
 > **Puerto:** `${BACKEND_PORT}:5000`  
-> **Función:** API REST que gestiona la comunicación con la base de datos y le envía al frontend los datos que necesita.
+> **Función:** API REST que gestiona la comunicación con la base de datos y le envía al frontend los datos que necesita. También se le asignó la funcionalidad de verificar el estado dinámicamente de cada servicio.
 
 ---
 
