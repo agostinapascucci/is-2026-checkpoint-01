@@ -18,7 +18,7 @@ function setStatus(ok, message) {
 
 /** Devuelve el HTML de una fila de la tabla a partir de un objeto miembro. */
 function buildRow(member, index) {
-    const statusClass = (member.estado || '').toLowerCase() === 'up' ? 'up' : 'down';
+    const statusClass = (member.estado || '').toLowerCase() === 'running' ? 'up' : 'down';
     const statusLabel = statusClass === 'up' ? 'UP' : 'DOWN';
 
     return `
