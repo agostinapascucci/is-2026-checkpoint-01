@@ -122,6 +122,14 @@ POSTGRES_DB=<!-- nombre de la base de datos -->
 
 ### 3. Levantar los servicios
 
+Si es la primera vez que se levanta el proyecto, se debe ejecutar el comando:
+
+```bash
+docker compose up -d --build
+```
+
+Si no es la primera vez que se levanta el proyecto, se debe ejecutar el comando:
+
 ```bash
 docker compose up -d
 ```
